@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+  <display-name>Date Utility Functions</display-name>
+  <tlib-version>1.0</tlib-version>
+  <short-name>dateUtil</short-name>
+  <uri>http://app.spring.web/dateUtil</uri>
+
+  <function>
+    <description>Format LocalDateTime to string</description>
+    <name>formatLocalDateTime</name>
+    <function-class>app.spring.web.util.DateUtil</function-class>
+    <function-signature>java.lang.String formatLocalDateTime(java.time.LocalDateTime, java.lang.String)</function-signature>
+    <example>
+      ${dateUtil:formatLocalDateTime(user.createdAt, 'yyyy-MM-dd HH:mm:ss')}
+    </example>
+  </function>
+
+</taglib>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+  <display-name>Menu Utility Functions</display-name>
+  <tlib-version>1.0</tlib-version>
+  <short-name>menuUtil</short-name>
+  <uri>http://app.spring.web/menuUtil</uri>
+
+  <function>
+    <description>Check if menu URL is active for current request</description>
+    <name>isMenuActive</name>
+    <function-class>app.spring.web.util.MenuUtil</function-class>
+    <function-signature>boolean isMenuActive(javax.servlet.http.HttpServletRequest, java.lang.String)</function-signature>
+    <example>
+      ${menuUtil:isMenuActive(pageContext.request, '/users')}
+    </example>
+  </function>
+
+  <function>
+    <description>Check if any child menu is active</description>
+    <name>hasActiveChild</name>
+    <function-class>app.spring.web.util.MenuUtil</function-class>
+    <function-signature>boolean hasActiveChild(javax.servlet.http.HttpServletRequest, java.lang.String[])</function-signature>
+    <example>
+      ${menuUtil:hasActiveChild(pageContext.request, childUrls)}
+    </example>
+  </function>
+
+  <function>
+    <description>Generate CSS class for menu item</description>
+    <name>getMenuClass</name>
+    <function-class>app.spring.web.util.MenuUtil</function-class>
+    <function-signature>java.lang.String getMenuClass(javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)</function-signature>
+    <example>
+      class="${menuUtil:getMenuClass(pageContext.request, '/users', 'nav-link')}"
+    </example>
+  </function>
+
+  <function>
+    <description>Get aria-current attribute value for active menu</description>
+    <name>getAriaCurrent</name>
+    <function-class>app.spring.web.util.MenuUtil</function-class>
+    <function-signature>java.lang.String getAriaCurrent(javax.servlet.http.HttpServletRequest, java.lang.String)</function-signature>
+    <example>
+      aria-current="${menuUtil:getAriaCurrent(pageContext.request, '/users')}"
+    </example>
+  </function>
+
+</taglib>

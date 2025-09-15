@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="60" height="60">
+  <defs>
+    <style>
+      .cls-1 { fill: #6c757d; }
+      .cls-2 { fill: #495057; }
+      .cls-3 { fill: #f8f9fa; }
+    </style>
+  </defs>
+  <circle class="cls-3" cx="100" cy="100" r="100"/>
+  <circle class="cls-1" cx="100" cy="80" r="35"/>
+  <path class="cls-2" d="M100,130c-35,0-65,20-75,45h150C165,150,135,130,100,130z"/>
+</svg>

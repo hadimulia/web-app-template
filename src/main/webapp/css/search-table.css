@@ -1,0 +1,202 @@
+/* Search Table Component Styles */
+.search-table-container {
+    margin-bottom: 2rem;
+}
+
+/* Search input styles */
+.search-table-container .input-group {
+    max-width: 400px;
+    margin-left: auto;
+}
+
+.search-table-container .input-group input {
+    border-right: 0;
+}
+
+.search-table-container .input-group .btn {
+    border-left: 0;
+    background-color: #fff;
+    border-color: #ced4da;
+}
+
+.search-table-container .input-group .btn:hover {
+    background-color: #f8f9fa;
+}
+
+/* Sortable headers */
+.search-table-container th[data-sortable="true"] {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 2rem !important;
+}
+
+.search-table-container th[data-sortable="true"]:hover {
+    background-color: #f8f9fa;
+}
+
+.search-table-container th[data-sortable="true"]:after {
+    content: '';
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid #6c757d;
+    opacity: 0.3;
+}
+
+.search-table-container th[data-sortable="true"].sort-asc:after {
+    border-bottom: 4px solid #007bff;
+    border-top: none;
+    opacity: 1;
+}
+
+.search-table-container th[data-sortable="true"].sort-desc:after {
+    border-top: 4px solid #007bff;
+    border-bottom: none;
+    opacity: 1;
+}
+
+/* Loading state */
+.search-table-container #loading {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.search-table-container .table {
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Pagination styles */
+.search-table-container .pagination {
+    margin-bottom: 0;
+}
+
+.search-table-container .page-link {
+    color: #007bff;
+    border-color: #dee2e6;
+}
+
+.search-table-container .page-link:hover {
+    color: #0056b3;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.search-table-container .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.search-table-container .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+/* Info and controls */
+.search-table-container .form-control-sm {
+    width: auto;
+    display: inline-block;
+}
+
+.search-table-container .text-muted {
+    font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-table-container .d-sm-flex {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
+    .search-table-container .input-group {
+        max-width: none;
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+    
+    .search-table-container .pagination {
+        justify-content: center !important;
+    }
+    
+    .search-table-container .text-right {
+        text-align: center !important;
+        margin-top: 1rem;
+    }
+}
+
+/* Table responsiveness */
+.search-table-container .table-responsive {
+    border: none;
+}
+
+.search-table-container .table {
+    margin-bottom: 0;
+}
+
+/* Empty state */
+.search-table-container .table tbody tr td[colspan] {
+    padding: 3rem 1rem;
+    font-style: italic;
+}
+
+/* Button styles in table */
+.search-table-container .table .btn {
+    margin-right: 0.25rem;
+}
+
+.search-table-container .table .btn:last-child {
+    margin-right: 0;
+}
+
+/* Badge styles */
+.search-table-container .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.5rem;
+}
+
+/* Animation for loading */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.search-table-container .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Search suggestions (if implemented) */
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ced4da;
+    border-top: none;
+    border-radius: 0 0 0.25rem 0.25rem;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.search-suggestions .suggestion-item {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.search-suggestions .suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+
+.search-suggestions .suggestion-item:last-child {
+    border-bottom: none;
+}

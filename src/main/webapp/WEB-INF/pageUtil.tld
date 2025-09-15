@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+        http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        version="2.1">
+
+    <description>Pagination Utility Tags</description>
+    <display-name>Pagination Utils</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>pageUtil</short-name>
+    <uri>http://app.spring.web/pageUtil</uri>
+
+    <tag>
+        <description>Renders a search and pagination table</description>
+        <name>searchTable</name>
+        <tag-class>app.spring.web.util.SearchTableTag</tag-class>
+        <body-content>JSP</body-content>
+        
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>Table ID</description>
+        </attribute>
+        
+        <attribute>
+            <name>apiUrl</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>API URL for data loading</description>
+        </attribute>
+        
+        <attribute>
+            <name>searchUrl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>API URL for search suggestions</description>
+        </attribute>
+        
+        <attribute>
+            <name>title</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>Table title</description>
+        </attribute>
+        
+        <attribute>
+            <name>createUrl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>URL for create new item</description>
+        </attribute>
+        
+        <attribute>
+            <name>createLabel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>Label for create button</description>
+        </attribute>
+        
+        <attribute>
+            <name>pageSize</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>Default page size</description>
+        </attribute>
+        
+        <attribute>
+            <name>sortBy</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>Default sort column</description>
+        </attribute>
+        
+        <attribute>
+            <name>sortDir</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>Default sort direction</description>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Renders pagination controls</description>
+        <name>pagination</name>
+        <tag-class>app.spring.web.util.PaginationTag</tag-class>
+        <body-content>empty</body-content>
+        
+        <attribute>
+            <name>containerId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>Container ID for pagination</description>
+        </attribute>
+    </tag>
+
+</taglib>
