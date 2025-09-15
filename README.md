@@ -4,14 +4,14 @@
 A complete Spring Boot 2.7.18 admin panel with JSP, TkMyBatis 4.2.1, MySQL, and SB Admin template.
 
 ## Features Implemented
-✅ User Management (CRUD)
-✅ Role Management (CRUD) 
-✅ Menu Management (CRUD)
-✅ Login Authentication with Spring Security
-✅ Session Management & Force Logout
-✅ Dynamic Menu from Database (Tree Structure)
-✅ Session Caching for User Details & Menus
-✅ SB Admin Template Layout
+✅ User Management (CRUD) </br>
+✅ Role Management (CRUD) </br>
+✅ Menu Management (CRUD) </br>
+✅ Login Authentication with Spring Security </br>
+✅ Session Management & Force Logout </br>
+✅ Dynamic Menu from Database (Tree Structure) </br>
+✅ Session Caching for User Details & Menus </br>
+✅ SB Admin Template Layout </br>
 
 ## Technologies Used
 - Spring Boot 2.7.18
