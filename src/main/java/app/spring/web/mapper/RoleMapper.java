@@ -3,11 +3,11 @@ package app.spring.web.mapper;
 import app.spring.web.model.Role;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-public interface RoleMapper extends Mapper<Role> {
+@org.apache.ibatis.annotations.Mapper
+public interface RoleMapper extends tk.mybatis.mapper.common.Mapper<Role> {
     
     @Select("SELECT * FROM sys_role WHERE role_code = #{roleCode}")
     Role findByRoleCode(@Param("roleCode") String roleCode);

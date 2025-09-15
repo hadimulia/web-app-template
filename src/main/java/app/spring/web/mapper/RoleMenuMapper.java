@@ -4,11 +4,11 @@ import app.spring.web.model.RoleMenu;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-public interface RoleMenuMapper extends Mapper<RoleMenu> {
+@org.apache.ibatis.annotations.Mapper
+public interface RoleMenuMapper extends tk.mybatis.mapper.common.Mapper<RoleMenu> {
     
     @Select("SELECT * FROM sys_role_menu WHERE role_id = #{roleId}")
     List<RoleMenu> findByRoleId(@Param("roleId") Long roleId);

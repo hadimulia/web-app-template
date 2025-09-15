@@ -45,6 +45,7 @@ class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .antMatchers("/css/**", "/js/**", "/img/**", "/vendor/**", "/favicon.ico").permitAll()
                 .antMatchers("/login").permitAll()
+                .antMatchers("/portal").permitAll()
                 .antMatchers("/api/debug/**").permitAll()
                 .anyRequest().authenticated()
             )

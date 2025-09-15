@@ -4,12 +4,12 @@ import app.spring.web.model.User;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface UserMapper extends Mapper<User> {
+@org.apache.ibatis.annotations.Mapper
+public interface UserMapper extends tk.mybatis.mapper.common.Mapper<User> {
     
     @Select("SELECT * FROM sys_user WHERE username = #{username}")
     User findByUsername(@Param("username") String username);

@@ -4,11 +4,11 @@ import app.spring.web.model.UserRole;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-public interface UserRoleMapper extends Mapper<UserRole> {
+@org.apache.ibatis.annotations.Mapper
+public interface UserRoleMapper extends tk.mybatis.mapper.common.Mapper<UserRole> {
     
     @Select("SELECT * FROM sys_user_role WHERE user_id = #{userId}")
     List<UserRole> findByUserId(@Param("userId") Long userId);

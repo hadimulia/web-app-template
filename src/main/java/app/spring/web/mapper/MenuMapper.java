@@ -3,11 +3,11 @@ package app.spring.web.mapper;
 import app.spring.web.model.Menu;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-public interface MenuMapper extends Mapper<Menu> {
+@org.apache.ibatis.annotations.Mapper
+public interface MenuMapper extends tk.mybatis.mapper.common.Mapper<Menu> {
     
     @Select("SELECT * FROM sys_menu WHERE menu_code = #{menuCode}")
     Menu findByMenuCode(@Param("menuCode") String menuCode);
