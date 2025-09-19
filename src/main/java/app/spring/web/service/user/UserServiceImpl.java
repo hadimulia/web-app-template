@@ -1,4 +1,11 @@
-package app.spring.web.service;
+package app.spring.web.service.user;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.spring.web.mapper.UserMapper;
 import app.spring.web.mapper.UserRoleMapper;
@@ -6,39 +13,25 @@ import app.spring.web.model.PageRequest;
 import app.spring.web.model.PageResponse;
 import app.spring.web.model.User;
 import app.spring.web.model.UserRole;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import app.spring.web.service.generic.GenericServiceImpl;
 
 @Service
 @Transactional
-public class UserService {
+public class UserServiceImpl extends GenericServiceImpl<User, Long> implements UserService {
     
-    private final UserMapper userMapper;
+    private UserMapper userMapper;
     private final UserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
     
-    @Autowired
-    public UserService(UserMapper userMapper, UserRoleMapper userRoleMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserMapper userMapper, UserRoleMapper userRoleMapper, PasswordEncoder passwordEncoder) {
+        super(userMapper);
         this.userMapper = userMapper;
         this.userRoleMapper = userRoleMapper;
         this.passwordEncoder = passwordEncoder;
     }
     
-    public List<User> findAll() {
-        return userMapper.selectAll();
-    }
-    
     public List<User> findActiveUsers() {
         return userMapper.findActiveUsers();
-    }
-    
-    public User findById(Long id) {
-        return userMapper.selectByPrimaryKey(id);
     }
     
     public User findByUsername(String username) {
@@ -57,33 +50,44 @@ public class UserService {
         return userMapper.countByEmailExcludeId(email, excludeId != null ? excludeId : -1L) > 0;
     }
     
+    @Override
     public User save(User user) {
-        if (user.getId() == null) {
-            // Create new user
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setCreatedAt(LocalDateTime.now());
-            user.setStatus(1);
-            userMapper.insertSelective(user);
-        } else {
-            // Update existing user
-            user.setUpdatedAt(LocalDateTime.now());
-            if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+        try {
+            if (user.getId() == null) {
+                // Create new user
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user.setCreatedAt(LocalDateTime.now());
+                user.setStatus(1);
+                userMapper.insertSelective(user);
             } else {
-                // Don't update password if it's empty
-                User existingUser = userMapper.selectByPrimaryKey(user.getId());
-                user.setPassword(existingUser.getPassword());
+                // Update existing user
+                user.setUpdatedAt(LocalDateTime.now());
+                if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+                    user.setPassword(passwordEncoder.encode(user.getPassword()));
+                } else {
+                    // Don't update password if it's empty
+                    User existingUser = userMapper.selectByPrimaryKey(user.getId());
+                    user.setPassword(existingUser.getPassword());
+                }
+                userMapper.updateByPrimaryKeySelective(user);
             }
-            userMapper.updateByPrimaryKeySelective(user);
+            return user;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error saving user", e);
         }
-        return user;
     }
     
-    public void delete(Long id) {
-        // Delete user roles first
-        userRoleMapper.deleteByUserId(id);
-        // Delete user
-        userMapper.deleteByPrimaryKey(id);
+    public void deleteUser(Long id) {
+        try {
+            // Delete user roles first
+            userRoleMapper.deleteByUserId(id);
+            // Delete user
+            userMapper.deleteByPrimaryKey(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error deleting user", e);
+        }
     }
     
     public void updateLastLogin(Long userId) {

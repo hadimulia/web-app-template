@@ -5,8 +5,9 @@ import app.spring.web.model.PageResponse;
 import app.spring.web.model.Role;
 import app.spring.web.model.User;
 import app.spring.web.model.UserRole;
-import app.spring.web.service.RoleService;
-import app.spring.web.service.UserService;
+import app.spring.web.service.role.RoleServiceImpl;
+import app.spring.web.service.user.UserServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,14 +26,14 @@ import java.util.concurrent.CompletableFuture;
 public class UserController {
     
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
     
     @Autowired
-    private RoleService roleService;
+    private RoleServiceImpl roleService;
     
     @GetMapping
     public String list(Model model) {
-        List<User> users = userService.findAll();
+        List<User> users = userService.getAll();
         model.addAttribute("users", users);
         return "users/list";
     }
@@ -46,7 +47,7 @@ public class UserController {
     
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        User user = userService.findById(id);
+        User user = userService.get(id);
         if (user == null) {
             return "redirect:/users?error=User not found";
         }
@@ -104,13 +105,13 @@ public class UserController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            User user = userService.findById(id);
+            User user = userService.get(id);
             if (user == null) {
                 redirectAttributes.addFlashAttribute("error", "User not found");
                 return "redirect:/users";
             }
             
-            userService.delete(id);
+            userService.deleteUser(id);
             redirectAttributes.addFlashAttribute("success", "User deleted successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error deleting user: " + e.getMessage());
@@ -120,7 +121,7 @@ public class UserController {
     
     @GetMapping("/view/{id}")
     public String view(@PathVariable Long id, Model model) {
-        User user = userService.findById(id);
+        User user = userService.get(id);
         if (user == null) {
             return "redirect:/users?error=User not found";
         }

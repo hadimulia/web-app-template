@@ -3,7 +3,8 @@ package app.spring.web.controller;
 import app.spring.web.model.Menu;
 import app.spring.web.model.PageRequest;
 import app.spring.web.model.PageResponse;
-import app.spring.web.service.MenuService;
+import app.spring.web.service.menu.MenuServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,11 +23,11 @@ import java.util.concurrent.CompletableFuture;
 public class MenuController {
     
     @Autowired
-    private MenuService menuService;
+    private MenuServiceImpl menuService;
     
     @GetMapping
     public String list(Model model) {
-        List<Menu> menus = menuService.findAll();
+        List<Menu> menus = menuService.findActiveMenus();
         // Build tree structure for display
         List<Menu> menuTree = menuService.buildMenuTree(menus);
         // Flatten the tree for easier JSP rendering
@@ -76,14 +77,14 @@ public class MenuController {
     
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        Menu menu = menuService.findById(id);
+        Menu menu = menuService.get(id);
         if (menu == null) {
             return "redirect:/menus?error=Menu not found";
         }
         
         // Set parent name for display
         if (menu.getParentId() != null) {
-            Menu parentMenu = menuService.findById(menu.getParentId());
+            Menu parentMenu = menuService.get(menu.getParentId());
             if (parentMenu != null) {
                 menu.setParentName(parentMenu.getMenuName());
             }
@@ -123,7 +124,7 @@ public class MenuController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Menu menu = menuService.findById(id);
+            Menu menu = menuService.get(id);
             if (menu == null) {
                 redirectAttributes.addFlashAttribute("error", "Menu not found");
                 return "redirect:/menus";
@@ -134,7 +135,7 @@ public class MenuController {
                 return "redirect:/menus";
             }
             
-            menuService.delete(id);
+            menuService.deleteMenu(id);
             redirectAttributes.addFlashAttribute("success", "Menu deleted successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error deleting menu: " + e.getMessage());
@@ -144,14 +145,14 @@ public class MenuController {
     
     @GetMapping("/view/{id}")
     public String view(@PathVariable Long id, Model model) {
-        Menu menu = menuService.findById(id);
+        Menu menu = menuService.get(id);
         if (menu == null) {
             return "redirect:/menus?error=Menu not found";
         }
         
         // Set parent name for display
         if (menu.getParentId() != null) {
-            Menu parentMenu = menuService.findById(menu.getParentId());
+            Menu parentMenu = menuService.get(menu.getParentId());
             if (parentMenu != null) {
                 menu.setParentName(parentMenu.getMenuName());
             }

@@ -1,7 +1,8 @@
 package app.spring.web.controller;
 
 import app.spring.web.model.Role;
-import app.spring.web.service.RoleService;
+import app.spring.web.service.role.RoleServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,16 +15,16 @@ import java.util.List;
 public class DebugController {
 
     @Autowired
-    private RoleService roleService;
+    private RoleServiceImpl roleService;
 
     @GetMapping("/roles")
     public List<Role> getAllRoles() {
-        return roleService.findAll();
+        return roleService.getAll();
     }
     
     @GetMapping("/roles/count")
     public String getRoleCount() {
-        List<Role> roles = roleService.findAll();
+        List<Role> roles = roleService.getAll();
         return "Total roles: " + roles.size();
     }
 }

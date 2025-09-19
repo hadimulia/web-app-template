@@ -1,37 +1,33 @@
-package app.spring.web.service;
+package app.spring.web.service.customer;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.spring.web.mapper.CustomerMapper;
 import app.spring.web.model.Customer;
 import app.spring.web.model.PageRequest;
 import app.spring.web.model.PageResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import app.spring.web.service.generic.GenericServiceImpl;
 
 @Service
 @Transactional
-public class CustomerService {
+public class CustomerServiceImpl extends GenericServiceImpl<Customer, Long> implements CustomerService{
 
-    @Autowired
     private CustomerMapper customerMapper;
     
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    
+    public CustomerServiceImpl(CustomerMapper mapper) {
+		super(mapper);
+		this.customerMapper=mapper;
+	}
 
-    public List<Customer> findAll() {
-        return customerMapper.selectAll();
-    }
 
     public List<Customer> findActiveCustomers() {
         return customerMapper.findActiveCustomers();
-    }
-
-    public Customer findById(Long id) {
-        return customerMapper.selectByPrimaryKey(id);
     }
 
     public Customer findByCustomerCode(String customerCode) {
@@ -46,7 +42,7 @@ public class CustomerService {
     public PageResponse<Customer> findWithPagination(PageRequest pageRequest) {
         try {
             // Calculate offset
-            int offset = (pageRequest.getPage() - 1) * pageRequest.getSize();
+            Integer offset = (pageRequest.getPage() - 1) * pageRequest.getSize();
             
             // Get search parameters
             String search = pageRequest.getSearch();
@@ -66,7 +62,7 @@ public class CustomerService {
             long totalElements = customerMapper.countWithFilter(search, status, customerType);
             
             // Calculate total pages
-            int totalPages = (int) Math.ceil((double) totalElements / pageRequest.getSize());
+            Integer totalPages = (int) Math.ceil((double) totalElements / pageRequest.getSize());
             
             // Create response
             PageResponse<Customer> response = new PageResponse<>();
@@ -90,8 +86,8 @@ public class CustomerService {
         try {
             if (customer.getId() == null) {
                 // Create new customer
-                customer.setCreatedAt(LocalDateTime.now());
-                customer.setUpdatedAt(LocalDateTime.now());
+                customer.setCreatedAt(new Date());
+                customer.setUpdatedAt(new Date());
                 
                 // Generate customer code if not provided
                 if (customer.getCustomerCode() == null || customer.getCustomerCode().trim().isEmpty()) {
@@ -101,7 +97,7 @@ public class CustomerService {
                 customerMapper.insertSelective(customer);
             } else {
                 // Update existing customer
-                customer.setUpdatedAt(LocalDateTime.now());
+                customer.setUpdatedAt(new Date());
                 customerMapper.updateByPrimaryKeySelective(customer);
             }
             return customer;
@@ -113,11 +109,11 @@ public class CustomerService {
 
     public void delete(Long id) {
         try {
-            Customer customer = findById(id);
+            Customer customer = get(id);
             if (customer != null) {
                 // Soft delete - set status to 0 (inactive)
                 customer.setStatus(0);
-                customer.setUpdatedAt(LocalDateTime.now());
+                customer.setUpdatedAt(new Date());
                 customerMapper.updateByPrimaryKeySelective(customer);
             }
         } catch (Exception e) {
@@ -126,24 +122,16 @@ public class CustomerService {
         }
     }
 
-    public void hardDelete(Long id) {
-        try {
-            customerMapper.deleteByPrimaryKey(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error permanently deleting customer", e);
-        }
-    }
 
     // Validation methods
-    public boolean existsByCustomerCode(String customerCode, Long excludeId) {
+    public Boolean existsByCustomerCode(String customerCode, Long excludeId) {
         if (excludeId == null) {
             excludeId = -1L; // Use -1 for new records
         }
         return customerMapper.countByCustomerCodeExcludeId(customerCode, excludeId) > 0;
     }
 
-    public boolean existsByEmail(String email, Long excludeId) {
+    public Boolean existsByEmail(String email, Long excludeId) {
         if (excludeId == null) {
             excludeId = -1L; // Use -1 for new records
         }
@@ -151,19 +139,19 @@ public class CustomerService {
     }
 
     // Statistics methods
-    public int countActiveCustomers() {
+    public Integer countActiveCustomers() {
         return customerMapper.countActiveCustomers();
     }
 
-    public int countSuspendedCustomers() {
+    public Integer countSuspendedCustomers() {
         return customerMapper.countSuspendedCustomers();
     }
 
-    public int countNewCustomersToday() {
+    public Integer countNewCustomersToday() {
         return customerMapper.countNewCustomersToday();
     }
 
-    public int countNewCustomersThisMonth() {
+    public Integer countNewCustomersThisMonth() {
         return customerMapper.countNewCustomersThisMonth();
     }
 
@@ -185,13 +173,13 @@ public class CustomerService {
         try {
             // Find the highest customer code number
             List<Customer> allCustomers = customerMapper.selectAll();
-            int maxNumber = 0;
+            Integer maxNumber = 0;
             
             for (Customer customer : allCustomers) {
                 if (customer.getCustomerCode() != null && customer.getCustomerCode().startsWith("CUST")) {
                     try {
                         String numberPart = customer.getCustomerCode().substring(4);
-                        int number = Integer.parseInt(numberPart);
+                        Integer number = Integer.parseInt(numberPart);
                         if (number > maxNumber) {
                             maxNumber = number;
                         }
@@ -215,29 +203,30 @@ public class CustomerService {
 
     // Customer status management
     public void activateCustomer(Long customerId) {
-        Customer customer = findById(customerId);
+        Customer customer = get(customerId);
         if (customer != null) {
             customer.setStatus(1);
-            customer.setUpdatedAt(LocalDateTime.now());
+            customer.setUpdatedAt(new Date());
             customerMapper.updateByPrimaryKeySelective(customer);
         }
     }
 
     public void suspendCustomer(Long customerId) {
-        Customer customer = findById(customerId);
+        Customer customer = get(customerId);
         if (customer != null) {
             customer.setStatus(2);
-            customer.setUpdatedAt(LocalDateTime.now());
+            customer.setUpdatedAt(new Date());
             customerMapper.updateByPrimaryKeySelective(customer);
         }
     }
 
     public void deactivateCustomer(Long customerId) {
-        Customer customer = findById(customerId);
+        Customer customer = get(customerId);
         if (customer != null) {
             customer.setStatus(0);
-            customer.setUpdatedAt(LocalDateTime.now());
+            customer.setUpdatedAt(new Date());
             customerMapper.updateByPrimaryKeySelective(customer);
         }
     }
+
 }

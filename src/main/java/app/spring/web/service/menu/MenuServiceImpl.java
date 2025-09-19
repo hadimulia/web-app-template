@@ -1,13 +1,4 @@
-package app.spring.web.service;
-
-import app.spring.web.mapper.MenuMapper;
-import app.spring.web.mapper.RoleMenuMapper;
-import app.spring.web.model.Menu;
-import app.spring.web.model.PageRequest;
-import app.spring.web.model.PageResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+package app.spring.web.service.menu;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,26 +6,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import app.spring.web.mapper.MenuMapper;
+import app.spring.web.model.Menu;
+import app.spring.web.model.PageRequest;
+import app.spring.web.model.PageResponse;
+import app.spring.web.service.generic.GenericServiceImpl;
+
 @Service
 @Transactional
-public class MenuService {
+public class MenuServiceImpl extends GenericServiceImpl<Menu, Long> implements MenuService {
     
-    @Autowired
     private MenuMapper menuMapper;
     
-    @Autowired
-    private RoleMenuMapper roleMenuMapper;
-    
-    public List<Menu> findAll() {
-        return menuMapper.selectAll();
+    public MenuServiceImpl(MenuMapper mapper) {
+        super(mapper);
+        this.menuMapper = mapper;
     }
     
     public List<Menu> findActiveMenus() {
         return menuMapper.findActiveMenus();
-    }
-    
-    public Menu findById(Long id) {
-        return menuMapper.selectByPrimaryKey(id);
     }
     
     public Menu findByMenuCode(String menuCode) {
@@ -65,31 +58,42 @@ public class MenuService {
         return menuMapper.countChildMenus(parentId) > 0;
     }
     
+    @Override
     public Menu save(Menu menu) {
-        if (menu.getId() == null) {
-            // Create new menu
-            menu.setCreatedAt(LocalDateTime.now());
-            menu.setStatus(1);
-            if (menu.getSortOrder() == null) {
-                menu.setSortOrder(0);
+        try {
+            if (menu.getId() == null) {
+                // Create new menu
+                menu.setCreatedAt(LocalDateTime.now());
+                menu.setStatus(1);
+                if (menu.getSortOrder() == null) {
+                    menu.setSortOrder(0);
+                }
+                menuMapper.insertSelective(menu);
+            } else {
+                // Update existing menu
+                menu.setUpdatedAt(LocalDateTime.now());
+                menuMapper.updateByPrimaryKeySelective(menu);
             }
-            menuMapper.insertSelective(menu);
-        } else {
-            // Update existing menu
-            menu.setUpdatedAt(LocalDateTime.now());
-            menuMapper.updateByPrimaryKeySelective(menu);
+            
+            // Set parent name for display
+            if (menu.getParentId() != null) {
+                menu.setParentName(menuMapper.getMenuNameById(menu.getParentId()));
+            }
+            
+            return menu;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error saving menu", e);
         }
-        
-        // Set parent name for display
-        if (menu.getParentId() != null) {
-            menu.setParentName(menuMapper.getMenuNameById(menu.getParentId()));
-        }
-        
-        return menu;
     }
     
-    public void delete(Long id) {
-        menuMapper.deleteByPrimaryKey(id);
+    public void deleteMenu(Long id) {
+        try {
+            menuMapper.deleteByPrimaryKey(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error deleting menu", e);
+        }
     }
 
     // Add pagination support
@@ -162,18 +166,6 @@ public class MenuService {
         }
     }
 
-    private void buildChildMenus(Menu parentMenu, List<Menu> allMenus) {
-        List<Menu> children = new ArrayList<>();
-        
-        for (Menu menu : allMenus) {
-            if (menu.getParentId() != null && menu.getParentId().equals(parentMenu.getId())) {
-                children.add(menu);
-                buildChildMenus(menu, allMenus);
-            }
-        }
-        
-        parentMenu.setChildren(children);
-    }
     
     public List<Menu> getUserMenuTree(Long userId) {
         List<Menu> userMenus = findMenusByUserId(userId);

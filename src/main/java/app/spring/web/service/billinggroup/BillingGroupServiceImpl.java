@@ -1,4 +1,11 @@
-package app.spring.web.service;
+package app.spring.web.service.billinggroup;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import app.spring.web.mapper.BillingGroupMapper;
 import app.spring.web.mapper.CustomerBillingGroupMapper;
@@ -6,24 +13,24 @@ import app.spring.web.model.BillingGroup;
 import app.spring.web.model.CustomerBillingGroup;
 import app.spring.web.model.PageRequest;
 import app.spring.web.model.PageResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import app.spring.web.service.generic.GenericServiceImpl;
 
 @Service
 @Transactional
-public class BillingGroupService {
+public class BillingGroupServiceImpl extends GenericServiceImpl<BillingGroup, Long> implements BillingGroupService {
 
-    @Autowired
+	
     private BillingGroupMapper billingGroupMapper;
     
-    @Autowired
     private CustomerBillingGroupMapper customerBillingGroupMapper;
 
+    public BillingGroupServiceImpl(BillingGroupMapper mapper,CustomerBillingGroupMapper customerBillingGroupMapper) {
+		super(mapper);
+		this.billingGroupMapper = mapper;
+		this.customerBillingGroupMapper = customerBillingGroupMapper;
+	}
+    
+    
     public List<BillingGroup> findAll() {
         return billingGroupMapper.selectAll();
     }
@@ -96,12 +103,12 @@ public class BillingGroupService {
                     billingGroup.setGroupCode(generateGroupCode(billingGroup.getGroupName()));
                 }
                 
-                billingGroupMapper.insertSelective(billingGroup);
             } else {
                 // Update existing billing group
                 billingGroup.setUpdatedAt(LocalDateTime.now());
-                billingGroupMapper.updateByPrimaryKeySelective(billingGroup);
             }
+            billingGroup = super.save(billingGroup);
+            
             return billingGroup;
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,7 +123,7 @@ public class BillingGroupService {
                 // Soft delete - set status to 0 (inactive)
                 billingGroup.setStatus(0);
                 billingGroup.setUpdatedAt(LocalDateTime.now());
-                billingGroupMapper.updateByPrimaryKeySelective(billingGroup);
+                super.save(billingGroup);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,14 +132,14 @@ public class BillingGroupService {
     }
 
     // Validation methods
-    public boolean existsByGroupCode(String groupCode, Long excludeId) {
+    public Boolean existsByGroupCode(String groupCode, Long excludeId) {
         if (excludeId == null) {
             excludeId = -1L; // Use -1 for new records
         }
         return billingGroupMapper.countByGroupCodeExcludeId(groupCode, excludeId) > 0;
     }
 
-    public boolean existsByGroupName(String groupName, Long excludeId) {
+    public Boolean existsByGroupName(String groupName, Long excludeId) {
         if (excludeId == null) {
             excludeId = -1L; // Use -1 for new records
         }
@@ -140,11 +147,11 @@ public class BillingGroupService {
     }
 
     // Statistics methods
-    public int countActiveBillingGroups() {
+    public Integer countActiveBillingGroups() {
         return billingGroupMapper.countActiveBillingGroups();
     }
 
-    public int countAutoGenerateBillingGroups() {
+    public Integer countAutoGenerateBillingGroups() {
         return billingGroupMapper.countAutoGenerateBillingGroups();
     }
 
@@ -246,15 +253,15 @@ public class BillingGroupService {
     }
 
     // Assignment statistics
-    public int countActiveAssignments() {
+    public Integer countActiveAssignments() {
         return customerBillingGroupMapper.countActiveAssignments();
     }
 
-    public int countCustomersWithAssignments() {
+    public Integer countCustomersWithAssignments() {
         return customerBillingGroupMapper.countCustomersWithAssignments();
     }
 
-    public int countBillingGroupsWithAssignments() {
+    public Integer countBillingGroupsWithAssignments() {
         return customerBillingGroupMapper.countBillingGroupsWithAssignments();
     }
 
@@ -303,4 +310,6 @@ public class BillingGroupService {
             billingGroupMapper.updateByPrimaryKeySelective(billingGroup);
         }
     }
+
+	
 }

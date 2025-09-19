@@ -2,8 +2,9 @@ package app.spring.web.security;
 
 import app.spring.web.model.Menu;
 import app.spring.web.model.User;
-import app.spring.web.service.MenuService;
-import app.spring.web.service.UserService;
+import app.spring.web.service.menu.MenuServiceImpl;
+import app.spring.web.service.user.UserServiceImpl;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -18,10 +19,10 @@ import java.util.List;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     
-    private final UserService userService;
-    private final MenuService menuService;
+    private final UserServiceImpl userService;
+    private final MenuServiceImpl menuService;
     
-    public LoginSuccessHandler(UserService userService, MenuService menuService) {
+    public LoginSuccessHandler(UserServiceImpl userService, MenuServiceImpl menuService) {
         this.userService = userService;
         this.menuService = menuService;
     }

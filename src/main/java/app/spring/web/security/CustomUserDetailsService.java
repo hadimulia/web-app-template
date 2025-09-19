@@ -2,8 +2,9 @@ package app.spring.web.security;
 
 import app.spring.web.model.Role;
 import app.spring.web.model.User;
-import app.spring.web.service.RoleService;
-import app.spring.web.service.UserService;
+import app.spring.web.service.role.RoleServiceImpl;
+import app.spring.web.service.user.UserServiceImpl;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +18,10 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     
-    private final UserService userService;
-    private final RoleService roleService;
+    private final UserServiceImpl userService;
+    private final RoleServiceImpl roleService;
     
-    public CustomUserDetailsService(UserService userService, RoleService roleService) {
+    public CustomUserDetailsService(UserServiceImpl userService, RoleServiceImpl roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }

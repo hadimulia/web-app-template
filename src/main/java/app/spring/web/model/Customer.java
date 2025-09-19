@@ -2,11 +2,16 @@ package app.spring.web.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "crm_customer")
 public class Customer {
@@ -77,16 +82,16 @@ public class Customer {
     private Integer paymentTerms = 30; // Days
     
     @Column(name = "customer_since")
-    private LocalDate customerSince;
+    private Date customerSince;
     
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
     
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Date createdAt;
     
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Date updatedAt;
     
     @Column(name = "created_by")
     private Long createdBy;
@@ -109,223 +114,14 @@ public class Customer {
     
     // Constructors
     public Customer() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
     
     public Customer(String customerCode, String email) {
         this();
         this.customerCode = customerCode;
         this.email = email;
-    }
-    
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public String getCustomerCode() {
-        return customerCode;
-    }
-    
-    public void setCustomerCode(String customerCode) {
-        this.customerCode = customerCode;
-    }
-    
-    public String getCompanyName() {
-        return companyName;
-    }
-    
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-    
-    public String getContactPerson() {
-        return contactPerson;
-    }
-    
-    public void setContactPerson(String contactPerson) {
-        this.contactPerson = contactPerson;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    public String getPhone() {
-        return phone;
-    }
-    
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    
-    public String getAddress() {
-        return address;
-    }
-    
-    public void setAddress(String address) {
-        this.address = address;
-    }
-    
-    public String getCity() {
-        return city;
-    }
-    
-    public void setCity(String city) {
-        this.city = city;
-    }
-    
-    public String getState() {
-        return state;
-    }
-    
-    public void setState(String state) {
-        this.state = state;
-    }
-    
-    public String getPostalCode() {
-        return postalCode;
-    }
-    
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-    
-    public String getCountry() {
-        return country;
-    }
-    
-    public void setCountry(String country) {
-        this.country = country;
-    }
-    
-    public String getTaxId() {
-        return taxId;
-    }
-    
-    public void setTaxId(String taxId) {
-        this.taxId = taxId;
-    }
-    
-    public String getCustomerType() {
-        return customerType;
-    }
-    
-    public void setCustomerType(String customerType) {
-        this.customerType = customerType;
-    }
-    
-    public Integer getStatus() {
-        return status;
-    }
-    
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-    
-    public BigDecimal getCreditLimit() {
-        return creditLimit;
-    }
-    
-    public void setCreditLimit(BigDecimal creditLimit) {
-        this.creditLimit = creditLimit;
-    }
-    
-    public Integer getPaymentTerms() {
-        return paymentTerms;
-    }
-    
-    public void setPaymentTerms(Integer paymentTerms) {
-        this.paymentTerms = paymentTerms;
-    }
-    
-    public LocalDate getCustomerSince() {
-        return customerSince;
-    }
-    
-    public void setCustomerSince(LocalDate customerSince) {
-        this.customerSince = customerSince;
-    }
-    
-    public String getNotes() {
-        return notes;
-    }
-    
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-    
-    public Long getCreatedBy() {
-        return createdBy;
-    }
-    
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
-    }
-    
-    public Long getUpdatedBy() {
-        return updatedBy;
-    }
-    
-    public void setUpdatedBy(Long updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-    
-    public List<CustomerBillingGroup> getBillingGroups() {
-        return billingGroups;
-    }
-    
-    public void setBillingGroups(List<CustomerBillingGroup> billingGroups) {
-        this.billingGroups = billingGroups;
-    }
-    
-    public CustomerAuth getCustomerAuth() {
-        return customerAuth;
-    }
-    
-    public void setCustomerAuth(CustomerAuth customerAuth) {
-        this.customerAuth = customerAuth;
-    }
-    
-    public BigDecimal getTotalOutstanding() {
-        return totalOutstanding;
-    }
-    
-    public void setTotalOutstanding(BigDecimal totalOutstanding) {
-        this.totalOutstanding = totalOutstanding;
-    }
-    
-    public Integer getOverdueInvoicesCount() {
-        return overdueInvoicesCount;
-    }
-    
-    public void setOverdueInvoicesCount(Integer overdueInvoicesCount) {
-        this.overdueInvoicesCount = overdueInvoicesCount;
     }
     
     // Utility methods
@@ -371,13 +167,13 @@ public class Customer {
     
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        createdAt = new Date();
+        updatedAt = new Date();
     }
     
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = new Date();
     }
     
     @Override

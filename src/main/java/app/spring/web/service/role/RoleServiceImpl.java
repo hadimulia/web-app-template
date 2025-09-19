@@ -1,42 +1,39 @@
-package app.spring.web.service;
-
-import app.spring.web.mapper.RoleMapper;
-import app.spring.web.mapper.RoleMenuMapper;
-import app.spring.web.mapper.UserRoleMapper;
-import app.spring.web.model.Role;
-import app.spring.web.model.RoleMenu;
-import app.spring.web.model.PageRequest;
-import app.spring.web.model.PageResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+package app.spring.web.service.role;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import app.spring.web.mapper.RoleMapper;
+import app.spring.web.mapper.RoleMenuMapper;
+import app.spring.web.mapper.UserRoleMapper;
+import app.spring.web.model.PageRequest;
+import app.spring.web.model.PageResponse;
+import app.spring.web.model.Role;
+import app.spring.web.model.RoleMenu;
+import app.spring.web.service.generic.GenericServiceImpl;
+
 @Service
 @Transactional
-public class RoleService {
+public class RoleServiceImpl extends GenericServiceImpl<Role, Long> implements RoleService {
 
-    @Autowired
     private RoleMapper roleMapper;
 
-    @Autowired
     private RoleMenuMapper roleMenuMapper;
 
-    @Autowired
     private UserRoleMapper userRoleMapper;
 
-    public List<Role> findAll() {
-        return roleMapper.selectAll();
+    public RoleServiceImpl(RoleMapper mapper,UserRoleMapper userRoleMapper, RoleMenuMapper roleMenuMapper) {
+        super(mapper);
+        this.roleMapper = mapper;
+        this.roleMenuMapper = roleMenuMapper;
+        this.userRoleMapper = userRoleMapper;
     }
 
     public List<Role> findActiveRoles() {
         return roleMapper.findActiveRoles();
-    }
-
-    public Role findById(Long id) {
-        return roleMapper.selectByPrimaryKey(id);
     }
 
     public Role findByRoleCode(String roleCode) {
@@ -101,27 +98,38 @@ public class RoleService {
         return roleMapper.countByRoleNameExcludeId(roleName, excludeId != null ? excludeId : -1L) > 0;
     }
 
+    @Override
     public Role save(Role role) {
-        if (role.getId() == null) {
-            // Create new role
-            role.setCreatedAt(LocalDateTime.now());
-            role.setStatus(1);
-            roleMapper.insertSelective(role);
-        } else {
-            // Update existing role
-            role.setUpdatedAt(LocalDateTime.now());
-            roleMapper.updateByPrimaryKeySelective(role);
+        try {
+            if (role.getId() == null) {
+                // Create new role
+                role.setCreatedAt(LocalDateTime.now());
+                role.setStatus(1);
+                roleMapper.insertSelective(role);
+            } else {
+                // Update existing role
+                role.setUpdatedAt(LocalDateTime.now());
+                roleMapper.updateByPrimaryKeySelective(role);
+            }
+            return role;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error saving role", e);
         }
-        return role;
     }
 
-    public void delete(Long id) {
-        // Delete role menus first
-        roleMenuMapper.deleteByRoleId(id);
-        // Delete user roles
-        userRoleMapper.deleteByRoleId(id);
-        // Delete role
-        roleMapper.deleteByPrimaryKey(id);
+    public void deleteRole(Long id) {
+        try {
+            // Delete role menus first
+            roleMenuMapper.deleteByRoleId(id);
+            // Delete user roles
+            userRoleMapper.deleteByRoleId(id);
+            // Delete role
+            roleMapper.deleteByPrimaryKey(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error deleting role", e);
+        }
     }
 
     public void assignMenusToRole(Long roleId, List<Long> menuIds) {

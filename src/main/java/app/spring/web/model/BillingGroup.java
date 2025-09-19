@@ -1,10 +1,29 @@
 package app.spring.web.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "crm_billing_group")
 public class BillingGroup {
@@ -94,159 +113,6 @@ public class BillingGroup {
         this.groupCode = groupCode;
         this.groupName = groupName;
         this.basePrice = basePrice;
-    }
-    
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
-    public String getGroupCode() {
-        return groupCode;
-    }
-    
-    public void setGroupCode(String groupCode) {
-        this.groupCode = groupCode;
-    }
-    
-    public String getGroupName() {
-        return groupName;
-    }
-    
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-    
-    public String getDescription() {
-        return description;
-    }
-    
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
-    public BigDecimal getBasePrice() {
-        return basePrice;
-    }
-    
-    public void setBasePrice(BigDecimal basePrice) {
-        this.basePrice = basePrice;
-    }
-    
-    public String getCurrency() {
-        return currency;
-    }
-    
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-    
-    public String getBillingCycle() {
-        return billingCycle;
-    }
-    
-    public void setBillingCycle(String billingCycle) {
-        this.billingCycle = billingCycle;
-    }
-    
-    public Integer getDueDays() {
-        return dueDays;
-    }
-    
-    public void setDueDays(Integer dueDays) {
-        this.dueDays = dueDays;
-    }
-    
-    public Boolean getAutoGenerate() {
-        return autoGenerate;
-    }
-    
-    public void setAutoGenerate(Boolean autoGenerate) {
-        this.autoGenerate = autoGenerate;
-    }
-    
-    public BigDecimal getTaxRate() {
-        return taxRate;
-    }
-    
-    public void setTaxRate(BigDecimal taxRate) {
-        this.taxRate = taxRate;
-    }
-    
-    public String getNotes() {
-        return notes;
-    }
-    
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-    
-    public Integer getStatus() {
-        return status;
-    }
-    
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-    
-    public Long getCreatedBy() {
-        return createdBy;
-    }
-    
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
-    }
-    
-    public Long getUpdatedBy() {
-        return updatedBy;
-    }
-    
-    public void setUpdatedBy(Long updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-    
-    public Integer getActiveCustomersCount() {
-        return activeCustomersCount;
-    }
-    
-    public void setActiveCustomersCount(Integer activeCustomersCount) {
-        this.activeCustomersCount = activeCustomersCount;
-    }
-    
-    public BigDecimal getMonthlyRevenue() {
-        return monthlyRevenue;
-    }
-    
-    public void setMonthlyRevenue(BigDecimal monthlyRevenue) {
-        this.monthlyRevenue = monthlyRevenue;
-    }
-    
-    public Integer getPendingInvoicesCount() {
-        return pendingInvoicesCount;
-    }
-    
-    public void setPendingInvoicesCount(Integer pendingInvoicesCount) {
-        this.pendingInvoicesCount = pendingInvoicesCount;
     }
     
     // Utility methods

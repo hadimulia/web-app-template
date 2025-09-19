@@ -5,8 +5,9 @@ import app.spring.web.model.Role;
 import app.spring.web.model.RoleMenu;
 import app.spring.web.model.PageRequest;
 import app.spring.web.model.PageResponse;
-import app.spring.web.service.MenuService;
-import app.spring.web.service.RoleService;
+import app.spring.web.service.menu.MenuServiceImpl;
+import app.spring.web.service.role.RoleServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,10 +28,10 @@ import java.util.concurrent.CompletableFuture;
 public class RoleController {
 
     @Autowired
-    private RoleService roleService;
+    private RoleServiceImpl roleService;
 
     @Autowired
-    private MenuService menuService;
+    private MenuServiceImpl menuService;
 
     @GetMapping
     public String list(Model model) {
@@ -105,7 +106,7 @@ public class RoleController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        Role role = roleService.findById(id);
+        Role role = roleService.get(id);
         if (role == null) {
             return "redirect:/roles?error=Role not found";
         }
@@ -162,13 +163,13 @@ public class RoleController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Role role = roleService.findById(id);
+            Role role = roleService.get(id);
             if (role == null) {
                 redirectAttributes.addFlashAttribute("error", "Role not found");
                 return "redirect:/roles";
             }
 
-            roleService.delete(id);
+            roleService.deleteRole(id);
             redirectAttributes.addFlashAttribute("success", "Role deleted successfully!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error deleting role: " + e.getMessage());
@@ -178,7 +179,7 @@ public class RoleController {
 
     @GetMapping("/view/{id}")
     public String view(@PathVariable Long id, Model model) {
-        Role role = roleService.findById(id);
+        Role role = roleService.get(id);
         if (role == null) {
             return "redirect:/roles?error=Role not found";
         }

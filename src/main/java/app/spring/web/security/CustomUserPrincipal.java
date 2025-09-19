@@ -8,7 +8,9 @@ import java.util.Collection;
 
 public class CustomUserPrincipal implements UserDetails {
     
-    private User user;
+    private static final long serialVersionUID = -2093403318563942968L;
+    
+	private User user;
     private Collection<? extends GrantedAuthority> authorities;
     
     public CustomUserPrincipal(User user, Collection<? extends GrantedAuthority> authorities) {

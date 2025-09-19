@@ -1,29 +1,39 @@
 package app.spring.web.controller;
 
-import app.spring.web.model.Customer;
-import app.spring.web.model.PageRequest;
-import app.spring.web.model.PageResponse;
-import app.spring.web.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import app.spring.web.model.Customer;
+import app.spring.web.model.PageRequest;
+import app.spring.web.model.PageResponse;
+import app.spring.web.service.customer.CustomerService;
 
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
 
-    @Autowired
     private CustomerService customerService;
-
+    
+    public CustomerController(CustomerService customerService) {
+		this.customerService = customerService;
+	}
+    
     @GetMapping
     public String list(Model model) {
         model.addAttribute("pageTitle", "Customer Management");
@@ -89,7 +99,7 @@ public class CustomerController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Long id, Model model) {
-        Customer customer = customerService.findById(id);
+        Customer customer = customerService.get(id);
         if (customer == null) {
             return "redirect:/customers?error=Customer not found";
         }
@@ -133,7 +143,7 @@ public class CustomerController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Customer customer = customerService.findById(id);
+            Customer customer = customerService.get(id);
             if (customer == null) {
                 redirectAttributes.addFlashAttribute("error", "Customer not found");
                 return "redirect:/customers";
@@ -149,7 +159,7 @@ public class CustomerController {
 
     @GetMapping("/view/{id}")
     public String view(@PathVariable Long id, Model model) {
-        Customer customer = customerService.findById(id);
+        Customer customer = customerService.get(id);
         if (customer == null) {
             return "redirect:/customers?error=Customer not found";
         }
@@ -169,7 +179,7 @@ public class CustomerController {
     @PostMapping("/activate/{id}")
     public String activate(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Customer customer = customerService.findById(id);
+            Customer customer = customerService.get(id);
             if (customer == null) {
                 redirectAttributes.addFlashAttribute("error", "Customer not found");
                 return "redirect:/customers";
@@ -186,7 +196,7 @@ public class CustomerController {
     @PostMapping("/suspend/{id}")
     public String suspend(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Customer customer = customerService.findById(id);
+            Customer customer = customerService.get(id);
             if (customer == null) {
                 redirectAttributes.addFlashAttribute("error", "Customer not found");
                 return "redirect:/customers";

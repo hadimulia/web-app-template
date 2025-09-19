@@ -1,5 +1,8 @@
 $(document).ready(function() {
     
+    // Define context path - for billing groups specifically
+    const ctxPath = '/billing-groups';
+    
     try {
         const config = JSON.parse($('#billing-groups-config').text());
 
@@ -7,8 +10,8 @@ $(document).ready(function() {
         config.renderRow = function(billingGroup) {
 
             const statusBadge = billingGroup.status == 1
-                ? 'Active'
-                : 'Inactive';
+                ? '<span class="badge badge-success">Active</span>'
+                : '<span class="badge badge-secondary">Inactive</span>';
 
             const createdAt = billingGroup.createdAt
                 ? new Date(billingGroup.createdAt).toLocaleDateString()
@@ -16,23 +19,26 @@ $(document).ready(function() {
 
             const description = billingGroup.description || '-';
 
+            const basePrice = billingGroup.basePrice 
+                ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: billingGroup.currency || 'IDR' }).format(billingGroup.basePrice)
+                : 'N/A';
 
             return '' +
                 '<tr>' +
                 '  <td>' + (billingGroup.id || 'N/A') + '</td>' +
-                '  <td>' + (billingGroup.groupCode || 'N/A') + '</td>' +
-                '  <td><code>' + (billingGroup.groupName || 'N/A') + '</code></td>' +
-                '  <td>' + (billingGroup.basePrice || 'N/A') + '</td>' +
+                '  <td><code>' + (billingGroup.groupCode || 'N/A') + '</code></td>' +
+                '  <td>' + (billingGroup.groupName || 'N/A') + '</td>' +
+                '  <td>' + basePrice + '</td>' +
                 '  <td>' + (billingGroup.currency || 'N/A') + '</td>' +
                 '  <td>' + (billingGroup.billingCycle || 'N/A') + '</td>' +
-                '  <td>' + (billingGroup.autoGenerate || 'N/A') + '</td>' +
+                '  <td>' + (billingGroup.autoGenerate ? 'Yes' : 'No') + '</td>' +
                 '  <td>' + statusBadge + '</td>' +
                 '  <td>' + createdAt + '</td>' +
                 '  <td>' +
-                '    <a href="' + ctxPath + '/billing-groups/view/' + billingGroup.id + '" class="btn btn-info btn-sm" title="View">' +
+                '    <a href="' + ctxPath + '/view/' + billingGroup.id + '" class="btn btn-info btn-sm" title="View">' +
                 '        <i class="fas fa-eye"></i>' +
                 '    </a>' +
-                '    <a href="' + ctxPath + '/billing-groups/edit/' + billingGroup.id + '" class="btn btn-warning btn-sm" title="Edit">' +
+                '    <a href="' + ctxPath + '/edit/' + billingGroup.id + '" class="btn btn-warning btn-sm" title="Edit">' +
                 '        <i class="fas fa-edit"></i>' +
                 '    </a>' +
                 '    <button type="button" class="btn btn-danger btn-sm delete-btn" title="Delete"' +
@@ -43,11 +49,11 @@ $(document).ready(function() {
                 '</tr>';
         };
 
-        window.rolesTable = new SearchTable(config);
+        window.billingGroupsTable = new SearchTable(config);
 
     } catch (error) {
         console.error('Error initializing search table:', error);
-        $('#roles-container').html('<div class="alert alert-warning">Error loading search table. Please refresh the page.</div>');
+        $('#billing-groups-container').html('<div class="alert alert-warning">Error loading search table. Please refresh the page.</div>');
     }
     
     // Handle delete button clicks to show modal

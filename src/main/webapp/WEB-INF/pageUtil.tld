@@ -21,63 +21,54 @@
             <name>id</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>Table ID</description>
         </attribute>
         
         <attribute>
             <name>apiUrl</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>API URL for data loading</description>
         </attribute>
         
         <attribute>
             <name>searchUrl</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>API URL for search suggestions</description>
         </attribute>
         
         <attribute>
             <name>title</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>Table title</description>
         </attribute>
         
         <attribute>
             <name>createUrl</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>URL for create new item</description>
         </attribute>
         
         <attribute>
             <name>createLabel</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>Label for create button</description>
         </attribute>
         
         <attribute>
             <name>pageSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>Default page size</description>
         </attribute>
         
         <attribute>
             <name>sortBy</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>Default sort column</description>
         </attribute>
         
         <attribute>
             <name>sortDir</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>Default sort direction</description>
         </attribute>
     </tag>
 
@@ -91,7 +82,6 @@
             <name>containerId</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <description>Container ID for pagination</description>
         </attribute>
     </tag>
 

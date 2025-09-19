@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,6 +28,12 @@
     <script>
         const ctxPath = '${pageContext.request.contextPath}';
     </script>
+    <c:set var="currentPath" value="${pageContext.request.requestURI}" />
+    <c:set var="currentPath" value="${not empty requestScope['javax.servlet.forward.request_uri'] 
+                                ? requestScope['javax.servlet.forward.request_uri'] 
+                                : pageContext.request.requestURI}" />
+    <c:set var="contextPath" value="${pageContext.request.contextPath}" />
+    <c:set var="relativePath" value="${fn:substringAfter(currentPath, contextPath)}" />
 
 </head>
 
@@ -39,7 +46,10 @@
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
         <!-- Navbar Search-->
         <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-            
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+            </div>
         </form>
         <!-- Navbar-->
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
@@ -67,8 +77,6 @@
                         
                         <!-- Dynamic Menu from Database -->
                         <c:if test="${not empty userMenus}">
-                            <c:set var="currentPath" value="${pageContext.request.requestURI}" />
-                            <c:set var="contextPath" value="${pageContext.request.contextPath}" />
                             
                             <c:forEach var="menu" items="${userMenus}">
                                 <c:choose>
@@ -117,17 +125,18 @@
                                                     </c:choose>
                                                     
                                                     <c:set var="isChildActive" value="false" />
-                                                    <c:if test="${currentPath eq fullChildUrl or 
-                                                                 fn:endsWith(currentPath, childPath) or 
-                                                                 fn:startsWith(currentPath, fullChildUrl) or
-                                                                 (fn:contains(currentPath, childPath) and fn:length(childPath) > 3)}">
+                                                    
+                                                    <c:if test="${relativePath eq fullChildUrl or 
+                                                                 fn:endsWith(relativePath, childPath) or 
+                                                                 fn:startsWith(relativePath, fullChildUrl) or
+                                                                 (fn:contains(relativePath, childPath) and fn:length(childPath) > 3)}">
                                                         <c:set var="isChildActive" value="true" />
                                                     </c:if>
-                                                    
+<%--                                                     ${relativePath} - ${childPath} - ${fullChildUrl}   --%>
                                                     <a class="nav-link <c:if test='${isChildActive}'>active</c:if>" 
                                                        href="${pageContext.request.contextPath}${child.menuUrl}"
                                                        <c:if test='${isChildActive}'>aria-current="page"</c:if>>
-                                                        ${child.menuName}
+                                                        ${child.menuName} 
                                                     </a>
                                                 </c:forEach>
                                             </nav>
@@ -146,10 +155,11 @@
                                         </c:choose>
                                         
                                         <c:set var="isMenuActive" value="false" />
-                                        <c:if test="${currentPath eq fullMenuUrl or 
-                                                     fn:endsWith(currentPath, menuPath) or 
-                                                     fn:startsWith(currentPath, fullMenuUrl) or
-                                                     (fn:contains(currentPath, menuPath) and fn:length(menuPath) > 3)}">
+                                        
+                                        <c:if test="${relativePath eq fullMenuUrl or 
+                                                     fn:endsWith(relativePath, menuPath) or 
+                                                     fn:startsWith(relativePath, fullMenuUrl) or
+                                                     (fn:contains(relativePath, menuPath) and fn:length(menuPath) > 3)}">
                                             <c:set var="isMenuActive" value="true" />
                                         </c:if>
                                         
@@ -180,7 +190,7 @@
             <main>
                 <div class="container-fluid px-4">
                     <!-- Page Content -->
-                    <jsp:include page="${content}"/>
+                    <tiles:insertAttribute name="body"/>
                 </div>
             </main>
             <footer class="py-4 bg-light mt-auto">
